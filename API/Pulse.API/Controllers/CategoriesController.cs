@@ -42,5 +42,43 @@ namespace Pulse.API.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories(
+          [FromQuery] string? query,
+          [FromQuery] string? sortBy,
+          [FromQuery] string? sortDirection,
+          [FromQuery] int? pageNumber,
+          [FromQuery] int? pageSize)
+        {
+            var caterogies = await categoryRepository
+                .GetAllAsync(query, sortBy, sortDirection, pageNumber, pageSize);
+
+            // Map Domain model to DTO
+
+            var response = new List<CategoryDto>();
+            foreach (var category in caterogies)
+            {
+                response.Add(new CategoryDto
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    UrlHandle = category.UrlHandle
+                });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("count")]
+        //[Authorize(Roles = "Writer")]
+        public async Task<IActionResult> GetCategoriesTotal()
+        {
+            var count = await categoryRepository.GetCount();
+
+            return Ok(count);
+        }
+
+
     }
 }
