@@ -49,6 +49,18 @@ export class CategoryService {
   getCategoryCount(): Observable<number> {
     return this.http.get<number>(`${environment.apiBaseUrl}/api/categories/count`);
   }
+
+  getCategoryById(id: string): Observable<Category> {
+    return this.http.get<Category>(`${environment.apiBaseUrl}/api/categories/${id}`);
+  }
+
+  updateCategory(id: string, updateCategoryRequest: Category) : Observable<Category> {
+    return this.http.put<Category>(`${environment.apiBaseUrl}/api/categories/${id}`, updateCategoryRequest);
+  }
+
+   deleteCategory(id: string) : Observable<Category> {
+    return this.http.delete<Category>(`${environment.apiBaseUrl}/api/categories/${id}`)
+  }
 }
 
 
