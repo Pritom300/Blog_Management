@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
+import { BlogPostService } from '../services/blog-post.service';
+import { BlogPost } from '../models/blog-post.model';
 
 @Component({
   selector: 'app-blogpost-list',
@@ -16,10 +18,14 @@ import { Observable } from 'rxjs';
 export class BlogpostListComponent implements OnInit {
 
  
+blogPosts$?: Observable<BlogPost[]>;
 
+  constructor(private blogPostService: BlogPostService) {
+
+  }
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.blogPosts$ = this.blogPostService.getAllBlogPosts();
   }
 
 }

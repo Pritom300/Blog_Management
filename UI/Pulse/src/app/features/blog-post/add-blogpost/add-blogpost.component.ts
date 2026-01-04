@@ -4,17 +4,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AddBlogPost } from '../models/add-blog-post.model';
 import { BlogPostService } from '../services/blog-post.service';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-add-blogpost',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule, FormsModule, CommonModule],
+  imports: [RouterModule, ReactiveFormsModule, FormsModule, CommonModule,MarkdownModule],
   templateUrl: './add-blogpost.component.html',
   styleUrl: './add-blogpost.component.css'
 })
 export class AddBlogpostComponent {
 
   model: AddBlogPost;
+  isImageSelectorVisible : boolean = false;
+
 
   constructor(private blogPostService: BlogPostService,
     private router: Router) {
@@ -38,6 +41,15 @@ export class AddBlogpostComponent {
         this.router.navigateByUrl('/admin/blogposts');
       }
     });
+  }
+
+
+  openImageSelector(): void {
+    this.isImageSelectorVisible = true;
+  }
+
+  closeImageSelector() : void {
+    this.isImageSelectorVisible = false;
   }
 
 
