@@ -44,14 +44,14 @@ namespace CodePulse.API.Controllers
             };
 
 
-            //foreach (var categoryGuid in request.Categories)
-            //{
-            //    var existingCategory = await categoryRepository.GetById(categoryGuid);
-            //    if (existingCategory is not null)
-            //    {
-            //        blogPost.Categories.Add(existingCategory);
-            //    }
-            //}
+            foreach (var categoryGuid in request.Categories)
+            {
+                var existingCategory = await categoryRepository.GetById(categoryGuid);
+                if (existingCategory is not null)
+                {
+                    blogPost.Categories.Add(existingCategory);
+                }
+            }
 
             blogPost = await blogPostRepository.CreateAsync(blogPost);
 
