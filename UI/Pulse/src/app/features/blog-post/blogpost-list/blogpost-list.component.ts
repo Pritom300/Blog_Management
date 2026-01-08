@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { Observable } from 'rxjs';
+import {  ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Observable, Subscription } from 'rxjs';
 import { BlogPostService } from '../services/blog-post.service';
 import { BlogPost } from '../models/blog-post.model';
 
@@ -15,17 +15,37 @@ import { BlogPost } from '../models/blog-post.model';
 })
 
 
-export class BlogpostListComponent implements OnInit {
+export class BlogpostListComponent implements OnInit,  OnDestroy {
 
  
 blogPosts$?: Observable<BlogPost[]>;
+deleteBlogPostSubscription?: Subscription;
+id: string | null = null;
 
-  constructor(private blogPostService: BlogPostService) {
+  constructor(private blogPostService: BlogPostService, private route: ActivatedRoute, private router:Router) {
 
+  }
+  ngOnDestroy(): void {
+     this.deleteBlogPostSubscription?.unsubscribe();
   }
 
   ngOnInit(): void {
     this.blogPosts$ = this.blogPostService.getAllBlogPosts();
   }
+
+
+   onDelete(id: string): void {
+  if (!confirm('Are you sure you want to delete this blog post?')) {
+    return;
+  }
+
+  this.blogPosts$ = this.blogPostService.getAllBlogPosts();
+
+  this.blogPostService.deleteBlogPost(id).subscribe({
+    next: () => {
+      this.blogPosts$ = this.blogPostService.getAllBlogPosts();
+    }
+  });
+}
 
 }
