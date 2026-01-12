@@ -9,11 +9,13 @@ import { UpdateBlogPost } from '../models/update-blog-post.model';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
+import { ImageSelectorComponent } from '../../../shared/components/image-selector/image-selector.component';
+import { ImageSelectorServiceService } from '../../../shared/services/image-selector-service.service';
 
 @Component({
   selector: 'app-edit-blogpost',
   standalone: true,
-  imports: [RouterModule, ReactiveFormsModule, FormsModule, CommonModule,MarkdownModule],
+  imports: [RouterModule, ReactiveFormsModule, FormsModule, CommonModule,MarkdownModule,ImageSelectorComponent],
   templateUrl: './edit-blogpost.component.html',
   styleUrl: './edit-blogpost.component.css'
 })
@@ -26,16 +28,19 @@ export class EditBlogpostComponent implements OnInit, OnDestroy {
   categories$? : Observable<Category[]>;
   selectedCategories?: string[];
 
+  isImageSelectorVisible : boolean = false;
+
 
   routeSubscription?: Subscription;
   updateBlogPostSubscription?: Subscription;
   getBlogPostSubscription?: Subscription;
+  imageSelectSubscricption?: Subscription;
 
 
   constructor(private route: ActivatedRoute,
     private blogPostService: BlogPostService,
     private categoryService: CategoryService,
-    private router:Router) {
+    private router:Router, private imageService: ImageSelectorServiceService) {
 
   }
 
@@ -58,6 +63,16 @@ export class EditBlogpostComponent implements OnInit, OnDestroy {
           });
           ;
         }
+
+        this.imageSelectSubscricption = this.imageService.onSelectImage()
+        .subscribe({
+          next: (response) => {
+            if (this.model) {
+              this.model.featuredImageUrl = response.url;
+              this.isImageSelectorVisible = false;
+            }
+          }
+        })
 
       }
     });
@@ -89,11 +104,20 @@ export class EditBlogpostComponent implements OnInit, OnDestroy {
 
   }
 
+  openImageSelector(): void {
+    this.isImageSelectorVisible = true;
+  }
+
+  closeImageSelector() : void {
+    this.isImageSelectorVisible = false;
+  }
+
 
     ngOnDestroy(): void {
     this.routeSubscription?.unsubscribe();
     this.updateBlogPostSubscription?.unsubscribe();
     this.getBlogPostSubscription?.unsubscribe();
+    this.imageSelectSubscricption?.unsubscribe();
   }
 
 
